@@ -1,7 +1,7 @@
 function EmployeeListDetail() {
     return (
         <div>
-            EmployeesListPage
+            EmployeeDetail
         </div>
     );
 }

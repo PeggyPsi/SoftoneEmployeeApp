@@ -1,11 +1,11 @@
 import './style.module.scss'
 
-function Header() {
+function Footer() {
     return (
         <div>
-            Header
+            Footer
         </div>
     );
 }
 
-export default Header;
+export default Footer;

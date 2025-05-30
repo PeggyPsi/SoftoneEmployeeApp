@@ -1,9 +1,16 @@
-import { Routes, Route, BrowserRouter } from "react-router";
-import HomePage from './pages/HomePage';
-import Header from './layout/Header';
-import EmployeeDetailPage from './pages/EmployeeDetailPage';
-import EmployeeListPage from "pages/EmployeesListPage";
 import './App.module.scss'
+
+/** Libs **/
+import { Routes, Route, BrowserRouter } from "react-router";
+
+/** Layout **/
+import Header from './layout/Header';
+import Footer from './layout/Footer';
+
+/** Pages and Routing **/
+import HomePage from './pages/HomePage';
+import EmployeeDetailPage from './pages/EmployeeDetailPage';
+import EmployeeListPage from "./pages/EmployeesListPage";
 
 function App() {
     return (
@@ -18,7 +25,7 @@ function App() {
                             <Route path="/employee/:id" element={<EmployeeDetailPage />} />
                         </Routes>
                     </main>
-                    {/* <Footer /> */}
+                    <Footer />
                 </div>
             </BrowserRouter>
         </>

@@ -1,4 +1,4 @@
-function EmployeeDetail() {
+function EmployeesList() {
     return (
         <div>
             <h1>Employee Detail</h1>
@@ -6,4 +6,4 @@ function EmployeeDetail() {
     );
 }
 
-export default EmployeeDetail;
+export default EmployeesList;

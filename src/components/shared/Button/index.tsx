@@ -1,11 +1,11 @@
 import './style.module.scss'
 
-function Header() {
+function Button() {
     return (
         <div>
-            Header
+            <h1>Button</h1>
         </div>
     );
 }
 
-export default Header;
+export default Button;

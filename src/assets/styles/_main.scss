@@ -5,7 +5,7 @@
 
 // TODO: needs to be refactored
 
-@import 'variables';
+@use 'variables' as variables;
 
 :root {
     font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
