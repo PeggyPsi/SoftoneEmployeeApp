@@ -4,6 +4,8 @@
 
 const API_URL = "https://dummyjson.com/users";
 
+// TODO: When fetching data use typescripted interfaces for the data structure
+
 export async function fetchEmployees() {
     const res = await fetch(API_URL);
     if (!res.ok) {
