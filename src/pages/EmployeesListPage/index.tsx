@@ -1,7 +1,8 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Paper, Backdrop, CircularProgress } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Paper, Backdrop, CircularProgress, Button } from '@mui/material';
 import { fetchEmployees } from '../../api/employeeApi';
 import type { EmployeeResponse } from 'models/Employee';
 import { useEffect, useState } from 'react';
+import EditIcon from '@mui/icons-material/Edit';
 
 function EmployeeListPage() {
     const [loading, setLoading] = useState(false);
@@ -53,7 +54,9 @@ function EmployeeListPage() {
                             <TableCell>ID</TableCell>
                             <TableCell>Full Name</TableCell>
                             <TableCell>Department</TableCell>
+                            <TableCell>Email</TableCell>
                             <TableCell>Status</TableCell>
+                            <TableCell></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -62,7 +65,15 @@ function EmployeeListPage() {
                                 <TableCell>{row.id}</TableCell>
                                 <TableCell>{row.firstName} {row.lastName}</TableCell>
                                 <TableCell>{row.company?.department}</TableCell>
+                                <TableCell>
+                                    <a href={'mailto:' + row.email}>{row.email}</a>
+                                </TableCell>
                                 <TableCell>-</TableCell>
+                                <TableCell>
+                                    <Button variant="contained" onClick={() => { window.location.href = '/employee/' + row.id }}>
+                                        <EditIcon />Edit
+                                    </Button>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
@@ -76,7 +87,7 @@ function EmployeeListPage() {
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
-            </TableContainer>
+            </TableContainer >
         </>
     );
 
