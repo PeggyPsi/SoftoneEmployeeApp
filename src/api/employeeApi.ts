@@ -10,8 +10,8 @@ const baseApiUrl = "https://dummyjson.com";
  *  Fetches a paginated list of employees from the API.
  *  @param {number} [page] - The page number to fetch. Defaults to 1.
  * **/
-export async function fetchEmployees(page?: number): Promise<EmployeeResponse> {
-    const limit = 10; // Default limit
+export async function fetchEmployees(page?: number, rowsPerPage?: number): Promise<EmployeeResponse> {
+    const limit = rowsPerPage ?? 10; // Default limit
     let skip = 0; // Default skip
     if (page) {
         skip = (page - 1) * limit; // Assuming each page has 10 items
