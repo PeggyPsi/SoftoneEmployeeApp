@@ -2,7 +2,7 @@ import './style.module.scss'
 
 function Header() {
     return (
-        <div>
+        <div className="header-container">
             Header
         </div>
     );
