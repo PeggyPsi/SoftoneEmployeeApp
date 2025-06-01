@@ -1,11 +1,15 @@
-$white: #FAE3E3;
-$black: #0F1A20;
-
+$white: #F9F9F9;
+$black: #030712;
 $warningColor: #F7B801;
 $dangerColor: #DB5A42;
 $successColor: #4CB963;
+$mainBackground: var(--main-background); // used basically for the whole base layout
+$secondaryBackground: var(--secondary-background); // used for the secondary layout, like the sidebar, cards etc 
 
-// Define your spacing scale
+$boxShadow: var(--box-shadow, none);
+
+$borderRadius: 10px;
+
 $spacers: (
     0: 0,
     1: 0.25rem,
@@ -14,3 +18,18 @@ $spacers: (
     4: 1.5rem,
     5: 3rem
 );
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --main-background: #030712; // used basically for the whole base layout
+        --secondary-background: #10141e; // used for the secondary layout, like the sidebar, cards etc
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --main-background: $white; // used basically for the whole base layout
+        --secondary-background: $white; // used for the secondary layout, like the sidebar, cards etc
+        --box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    }
+}

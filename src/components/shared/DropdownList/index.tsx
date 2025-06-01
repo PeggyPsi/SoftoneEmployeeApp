@@ -17,7 +17,7 @@ type DropdownListProps = {
 
 function DropdownList({ label, inputId, value, items, clearable = true, onDropdownListItemSelectedCallback }: DropdownListProps) {
     return (
-        <>
+        <div className="dropdown-list-container">
             <label htmlFor={inputId}>{label}</label>
             <select name={inputId}
                 id={inputId}
@@ -29,7 +29,7 @@ function DropdownList({ label, inputId, value, items, clearable = true, onDropdo
                     </option>
                 ))}
             </select>
-        </>
+        </div>
     );
 }
 

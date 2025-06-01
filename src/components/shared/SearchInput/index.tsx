@@ -12,7 +12,7 @@ function SearchInput({ label, inputId, value, onSearchInputCallback }: SearchInp
     const [searchValue, setSearchValue] = useState(value);
 
     return (
-        <>
+        <div className="search-input-container">
             <label htmlFor={inputId}>{label}</label>
             <input id={inputId}
                 type="text"
@@ -20,7 +20,7 @@ function SearchInput({ label, inputId, value, onSearchInputCallback }: SearchInp
                 onChange={(event) => setSearchValue(event.target.value)}
                 onBlur={() => onSearchInputCallback(searchValue)}
             />
-        </>
+        </div>
     );
 }
 

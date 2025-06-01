@@ -5,7 +5,9 @@ function EmployeeDetailPage() {
 
     return (
         <div>
-            EmployeeDetail {id}
+            <div className="card">
+                EmployeeDetail {id}
+            </div>
         </div>
     );
 }

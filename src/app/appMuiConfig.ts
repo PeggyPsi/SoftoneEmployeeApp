@@ -1,8 +1,27 @@
 import { createTheme } from "@mui/material";
 
-export const appMuiTheme = createTheme({
+export const lightTheme = createTheme({
     typography: {
         fontFamily: '"Poppins", sans-serif',
-        // TODO: Add more typography styles as needed
+    },
+    palette: {
+        mode: 'light',
+        background: {
+            default: '#fff',
+            paper: '#fff',
+        },
+    },
+});
+
+export const darkTheme = createTheme({
+    typography: {
+        fontFamily: '"Poppins", sans-serif',
+    },
+    palette: {
+        mode: 'dark',
+        background: {
+            default: '#030712',
+            paper: '#10141e',
+        },
     },
 });
