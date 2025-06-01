@@ -4,3 +4,13 @@ $black: #0F1A20;
 $warningColor: #F7B801;
 $dangerColor: #DB5A42;
 $successColor: #4CB963;
+
+// Define your spacing scale
+$spacers: (
+    0: 0,
+    1: 0.25rem,
+    2: 0.5rem,
+    3: 1rem,
+    4: 1.5rem,
+    5: 3rem
+);
