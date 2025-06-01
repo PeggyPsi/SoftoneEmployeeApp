@@ -1,33 +1,45 @@
 import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Employee, EmployeeResponse } from "models/Employee";
-import { fetchEmployees, type EmployeesFetchParams } from "./employeeApi";
+import { fetchAllEmployees } from "./employeeApi";
+
+export interface EmployeesFilterMeta {
+    key: string;
+    value: string;
+}
+
+export interface EmployeesFilterData {
+    filters?: EmployeesFilterMeta[];
+    page: number; //
+    limit: number;
+}
 
 // Private interface for the state of employees. No need to be exported.
 interface EmployeesState {
-    data: Employee[];
-    total: number;
+    allData: Employee[];
+    filteredData: Employee[];
+    total: number; // Total number of employees (not filtered)
     loading: boolean;
-    fetchParams: EmployeesFetchParams;
+    filterData: EmployeesFilterData;
 }
 
 // This is the initial state of the employees slice.
 const initialState: EmployeesState = {
-    data: [],
+    allData: [],
+    filteredData: [],
     total: 0,
     loading: false,
-    fetchParams: {
-        queryStr: '',
+    filterData: {
         filters: [],
-        page: 1,
-        limit: 10,
-    } as EmployeesFetchParams,
+        page: 1, // Start from the first page
+        limit: 10, // Default limit for pagination
+    } as EmployeesFilterData
 };
 
 // Async thunk for fetching employees
 export const fetchEmployeesThunk = createAsyncThunk(
     'employees/fetch',
-    async (fetchParams: EmployeesFetchParams) => {
-        return await fetchEmployees(fetchParams);
+    async () => {
+        return await fetchAllEmployees();
     }
 );
 
@@ -39,48 +51,90 @@ const employeesSlice = createSlice({
         //#region Filters
         setFirstNameFilter(state, action: PayloadAction<string>) {
             const filterValue = action.payload;
-            const updatedFilters = state.fetchParams.filters || [];
+            const updatedFilters = state.filterData.filters || [];
             if (filterValue) {
                 updatedFilters.push({ key: 'firstName', value: filterValue });
             }
-            state.fetchParams.filters = updatedFilters;
-            state.fetchParams.page = 1; // Reset to first page when department filter changes
+            state.filterData.filters = updatedFilters;
+            state.filterData.page = 1; // Reset to first page when department filter changes
+
+            employeesSlice.caseReducers.filterEmployees(state);
         },
         setlastNameFilter(state, action: PayloadAction<string>) {
             const filterValue = action.payload;
-            const updatedFilters = state.fetchParams.filters || [];
+            const updatedFilters = state.filterData.filters || [];
             if (filterValue) {
                 updatedFilters.push({ key: 'lastName', value: filterValue });
             }
-            state.fetchParams.filters = updatedFilters;
-            state.fetchParams.page = 1; // Reset to first page when department filter changes
+            state.filterData.filters = updatedFilters;
+            state.filterData.page = 1; // Reset to first page when department filter changes
+
+            employeesSlice.caseReducers.filterEmployees(state);
         },
         setDepartmentFilter(state, action: PayloadAction<string>) {
             const filterValue = action.payload;
-            const updatedFilters = state.fetchParams.filters || [];
+            const updatedFilters = state.filterData.filters || [];
             if (filterValue) {
                 updatedFilters.push({ key: 'company.department', value: filterValue });
             }
-            state.fetchParams.filters = updatedFilters;
-            state.fetchParams.page = 1; // Reset to first page when department filter changes
+            state.filterData.filters = updatedFilters;
+            state.filterData.page = 1; // Reset to first page when department filter changes
+
+            employeesSlice.caseReducers.filterEmployees(state);
         },
         setEmailFilter(state, action: PayloadAction<string>) {
             const filterValue = action.payload;
-            const updatedFilters = state.fetchParams.filters || [];
+            const updatedFilters = state.filterData.filters || [];
             if (filterValue) {
                 updatedFilters.push({ key: 'email', value: filterValue });
             }
-            state.fetchParams.filters = updatedFilters;
-            state.fetchParams.page = 1; // Reset to first page when email filter changes
+            state.filterData.filters = updatedFilters;
+            state.filterData.page = 1; // Reset to first page when email filter changes
+
+            employeesSlice.caseReducers.filterEmployees(state);
         },
         // TODO: add any other type of filters if needed
         //#endregion Filters
         setPage(state, action: PayloadAction<number>) {
-            state.fetchParams.page = action.payload;
+            state.filterData.page = action.payload;
+            employeesSlice.caseReducers.filterEmployees(state);
         },
         setLimit(state, action: PayloadAction<number>) {
-            state.fetchParams.limit = action.payload;
-            state.fetchParams.page = 0; // Reset to first page when rows per page changes
+            state.filterData.limit = action.payload;
+            state.filterData.page = 1; // Reset to first page when rows per page changes
+            employeesSlice.caseReducers.filterEmployees(state);
+        },
+        filterEmployees(state) {
+            const filters = state.filterData.filters || [];
+            const page = state.filterData.page || 1;
+            const limit = state.filterData.limit || 10;
+            let filteredData = [] as Employee[];
+            // Filter the allData based on the filters
+            if (filters.length === 0) { // If no filters are applied, return all data
+                filteredData = state.allData.slice();
+            }
+            else {
+                filteredData = state.allData.filter((employee) => {
+                    return filters.every((filter) => {
+                        switch (filter.key) {
+                            case 'firstName':
+                                return employee.firstName.toLowerCase().includes(filter.value.toLowerCase());
+                            case 'lastName':
+                                return employee.lastName.toLowerCase().includes(filter.value.toLowerCase());
+                            case 'company.department':
+                                return employee.company?.department?.toLowerCase().includes(filter.value.toLowerCase());
+                            case 'email':
+                                return employee.email?.toLowerCase().includes(filter.value.toLowerCase());
+                            default:
+                                return true; // If the filter key is not recognized, include the employee
+                        }
+                    });
+                });
+            }
+
+            // Set the filtered data and total count
+            state.filteredData = filteredData.slice((page - 1) * limit, page * limit);
+            state.total = filteredData.length;
         }
     },
     extraReducers: (builder) => {
@@ -91,8 +145,9 @@ const employeesSlice = createSlice({
             .addCase(fetchEmployeesThunk.fulfilled, (state, action) => {
                 state.loading = false;
                 const response = action.payload as EmployeeResponse;
-                state.data = response.users || [];
+                state.allData = response.users || [];
                 state.total = response.total || 0;
+                employeesSlice.caseReducers.filterEmployees(state); // Apply filter after fetch
             })
             .addCase(fetchEmployeesThunk.rejected, (state) => {
                 state.loading = false;

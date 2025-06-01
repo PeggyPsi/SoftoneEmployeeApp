@@ -14,8 +14,8 @@ function EmployeeListPage() {
     const dispatch: AppDispatch = useAppDispatch();
 
     useEffect(() => {
-        dispatch(fetchEmployeesThunk(employeesState.fetchParams));
-    }, [dispatch, employeesState.fetchParams]); // useEffect depends on the fetchParams
+        dispatch(fetchEmployeesThunk());
+    }, [dispatch]); // useEffect depends on the fetchParams
 
     //#region Render
 
@@ -46,7 +46,7 @@ function EmployeeListPage() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {employeesState.data.map((row) => (
+                            {employeesState.filteredData.map((row) => (
                                 <TableRow key={row.id}>
                                     <TableCell>{row.id}</TableCell>
                                     <TableCell>
@@ -73,8 +73,8 @@ function EmployeeListPage() {
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
                         count={employeesState.total ?? 0}
-                        rowsPerPage={employeesState.fetchParams.limit}
-                        page={employeesState.fetchParams.page - 1} // MUI TablePagination uses 0-based index
+                        rowsPerPage={employeesState.filterData.limit}
+                        page={employeesState.filterData.page - 1} // MUI TablePagination uses 0-based index
                         onPageChange={(event, newPage) => dispatch(setPage(newPage + 1))} // MUI TablePagination uses 0-based index so when page changes we need to dispatch newPage + 1
                         onRowsPerPageChange={(event) => dispatch(setLimit(Number(event.target.value)))}
                     />
@@ -90,10 +90,10 @@ function EmployeeListFilters() {
     const employeesState = useSelector((state: RootState) => state.employees);
     const dispatch: AppDispatch = useAppDispatch();
 
-    //const queryStr = employeesState.fetchParams.queryStr ?? '';
-    const firstName = employeesState.fetchParams.filters?.find(filter => filter.key === 'firstName')?.value ?? '';
-    const lastName = employeesState.fetchParams.filters?.find(filter => filter.key === 'lastName')?.value ?? '';
-    const email = employeesState.fetchParams.filters?.find(filter => filter.key === 'email')?.value ?? '';
+    const firstName = employeesState.filterData.filters?.find(filter => filter.key === 'firstName')?.value ?? '';
+    const lastName = employeesState.filterData.filters?.find(filter => filter.key === 'lastName')?.value ?? '';
+    const email = employeesState.filterData.filters?.find(filter => filter.key === 'email')?.value ?? '';
+    //const department = employeesState.filterData.filters?.find(filter => filter.key === 'company.department')?.value ?? '';
 
     return (
         <div className='d-flex align-items-center mb-5'>
