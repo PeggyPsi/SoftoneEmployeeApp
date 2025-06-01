@@ -1,43 +1,22 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Paper, Backdrop, CircularProgress, Button } from '@mui/material';
-import { fetchEmployees } from '../../api/employeeApi';
-import type { EmployeeResponse } from 'models/Employee';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
+import { useSelector } from 'react-redux';
+import type { RootState, AppDispatch } from 'app/appStore';
+import { fetchEmployeesThunk, setLimit, setPage } from '../../features/employees/employeesSlice';
+import { useAppDispatch } from '../../app/appHooks';
 
 function EmployeeListPage() {
-    const [loading, setLoading] = useState(false);
-    const [page, setPage] = useState(0); // Page starts at 0 for MUI TablePagination
-    const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [employees, setEmployees] = useState<EmployeeResponse | null>(null);
+    const employeesState = useSelector((state: RootState) => state.employees);
+    const dispatch: AppDispatch = useAppDispatch();
 
     useEffect(() => {
-        setLoading(true);
-        fetchEmployees(page + 1, rowsPerPage)
-            .then((result) => {
-                setEmployees(result);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    }, [page, rowsPerPage]); // useEffect depends on the provided array of state variables
-
-    //#region Handlers
-
-    function handleChangePage(event: React.MouseEvent | null, page: number) {
-        setPage(page);
-    }
-
-    function handleChangeRowsPerPage(event: React.ChangeEvent<HTMLInputElement>) {
-        const value = parseInt(event.target.value);
-        setRowsPerPage(value);
-        setPage(0); // Reset to first page when rows per page changes
-    }
-
-    //#endregion Handlers
+        dispatch(fetchEmployeesThunk(employeesState.fetchParams));
+    }, [dispatch, employeesState.fetchParams]); // useEffect depends on the fetchParams
 
     //#region Render
 
-    if (loading || !employees) {
+    if (employeesState.loading) {
         return (
             <Backdrop sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })} open={true}>
                 <CircularProgress color="inherit" />
@@ -60,7 +39,7 @@ function EmployeeListPage() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {employees.users.map((row) => (
+                        {employeesState.data.map((row) => (
                             <TableRow key={row.id}>
                                 <TableCell>{row.id}</TableCell>
                                 <TableCell>{row.firstName} {row.lastName}</TableCell>
@@ -81,11 +60,11 @@ function EmployeeListPage() {
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={employees?.total ?? 0}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    count={employeesState.total ?? 0}
+                    rowsPerPage={employeesState.fetchParams.limit}
+                    page={employeesState.fetchParams.page - 1} // MUI TablePagination uses 0-based index
+                    onPageChange={(event, newPage) => dispatch(setPage(newPage + 1))} // MUI TablePagination uses 0-based index so when page changes we need to dispatch newPage + 1
+                    onRowsPerPageChange={(event) => dispatch(setLimit(Number(event.target.value)))}
                 />
             </TableContainer >
         </>
