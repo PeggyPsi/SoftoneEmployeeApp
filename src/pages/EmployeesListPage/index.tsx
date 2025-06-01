@@ -5,9 +5,11 @@ import { useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from 'app/appStore';
 import { fetchEmployeesThunk, setFilter, setLimit, setPage, type EmployeesFilterMeta } from '../../features/employees/employeesSlice';
 import { useAppDispatch } from '../../app/appHooks';
-import { stringAvatar } from '../../app/appUtils';
+import { getDistinctValuesFromArray, stringAvatar } from '../../app/appUtils';
 import './style.module.scss'
 import SearchInput from '../../components/shared/SearchInput';
+import { convertArrayOfStringsToArrayOfDropdownListItems } from '../../components/shared/DropdownList/utils';
+import DropdownList from '../../components/shared/DropdownList';
 
 function EmployeeListPage() {
     const employeesState = useSelector((state: RootState) => state.employees);
@@ -93,13 +95,21 @@ function EmployeeListFilters() {
     const firstName = employeesState.filterData.filters?.find(filter => filter.key === 'firstName')?.value ?? '';
     const lastName = employeesState.filterData.filters?.find(filter => filter.key === 'lastName')?.value ?? '';
     const email = employeesState.filterData.filters?.find(filter => filter.key === 'email')?.value ?? '';
-    //const department = employeesState.filterData.filters?.find(filter => filter.key === 'company.department')?.value ?? '';
+    const department = employeesState.filterData.filters?.find(filter => filter.key === 'company.department')?.value ?? '';
+
+    // Convert departments to dropdown list items
+    const departments = employeesState.allData.map(employee => employee.company?.department)
+    const distinctDepartments = getDistinctValuesFromArray(departments);
+    const departmentsDropdownListItems = convertArrayOfStringsToArrayOfDropdownListItems(distinctDepartments);
 
     return (
         <div className='d-flex align-items-center mb-5'>
             <SearchInput value={firstName} inputId='firstNameInput' label="First Name" onSearchInputCallback={(value) => dispatch(setFilter({ key: "firstName", value: value } as EmployeesFilterMeta))} />
             <SearchInput value={lastName} inputId='lastNameInput' label="Last Name" onSearchInputCallback={(value) => dispatch(setFilter({ key: "lastName", value: value } as EmployeesFilterMeta))} />
             <SearchInput value={email} inputId='emailInput' label="Email" onSearchInputCallback={(value) => dispatch(setFilter({ key: "email", value: value } as EmployeesFilterMeta))} />
+            <DropdownList value={department} inputId='departmentInput' label='Department'
+                items={departmentsDropdownListItems}
+                onDropdownListItemSelectedCallback={(value) => dispatch(setFilter({ key: "company.department", value: value } as EmployeesFilterMeta))} />
         </div>
     )
 }
