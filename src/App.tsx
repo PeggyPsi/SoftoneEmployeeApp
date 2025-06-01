@@ -4,8 +4,8 @@ import './App.module.scss'
 import { Routes, Route, BrowserRouter } from "react-router";
 
 /** Layout **/
-import Header from './layout/Header';
-import Footer from './layout/Footer';
+// import Header from './layout/Header';
+// import Footer from './layout/Footer';
 
 /** Pages and Routing **/
 import HomePage from './pages/HomePage';
@@ -24,7 +24,7 @@ function App() {
                 <CssBaseline />
                 <BrowserRouter>
                     <div className="p-4">
-                        <Header />
+                        {/* <Header /> */}
                         <main>
                             <Routes>
                                 <Route path="/" element={<HomePage />} />
@@ -32,7 +32,7 @@ function App() {
                                 <Route path="/employee/:id" element={<EmployeeDetailPage />} />
                             </Routes>
                         </main>
-                        <Footer />
+                        {/* <Footer /> */}
                     </div>
                 </BrowserRouter>
             </ThemeProvider>

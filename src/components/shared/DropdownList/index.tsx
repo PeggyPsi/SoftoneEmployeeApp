@@ -18,7 +18,7 @@ type DropdownListProps = {
 function DropdownList({ label, inputId, value, items, clearable = true, onDropdownListItemSelectedCallback }: DropdownListProps) {
     return (
         <div className="dropdown-list-container">
-            <label htmlFor={inputId}>{label}</label>
+            <label htmlFor={inputId} className="mb-2">{label}</label>
             <select name={inputId}
                 id={inputId}
                 onChange={(event) => onDropdownListItemSelectedCallback(event.target.value)}>

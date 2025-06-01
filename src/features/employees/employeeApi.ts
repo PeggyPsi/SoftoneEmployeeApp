@@ -25,7 +25,7 @@ export async function fetchAllEmployees(): Promise<EmployeeResponse> {
  * @param {number} id - The ID of the employee to fetch.
  * @returns {Promise<Employee>} - A promise that resolves to an Employee object.
  */
-export async function fetchEmployeeById(id: number): Promise<Employee> {
+export async function fetchEmployeeById(id: string): Promise<Employee> {
     const url = `${baseApiUrl}/users/${id}`;
 
     return fetch(url)

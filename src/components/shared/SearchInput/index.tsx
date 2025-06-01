@@ -13,7 +13,7 @@ function SearchInput({ label, inputId, value, onSearchInputCallback }: SearchInp
 
     return (
         <div className="search-input-container">
-            <label htmlFor={inputId}>{label}</label>
+            <label htmlFor={inputId} className="mb-2">{label}</label>
             <input id={inputId}
                 type="text"
                 value={searchValue}

@@ -27,6 +27,7 @@ function EmployeeListPage() {
                 <Backdrop sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })} open={true}>
                     <CircularProgress color="inherit" />
                 </Backdrop>
+                <h1 className='mb-3 mt-0'>Employees List</h1>
                 <EmployeeListFilters />
             </>
         );
@@ -34,6 +35,7 @@ function EmployeeListPage() {
     else {
         return (
             <>
+                <h1 className='mb-3 mt-0'>Employees List</h1>
                 <EmployeeListFilters />
                 <div className='card'>
                     <TableContainer component={Paper} >
@@ -45,7 +47,7 @@ function EmployeeListPage() {
                                     <TableCell>Department</TableCell>
                                     <TableCell>Email</TableCell>
                                     {/* <TableCell>Status</TableCell> */}
-                                    <TableCell></TableCell>
+                                    <TableCell>Actions</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -64,8 +66,8 @@ function EmployeeListPage() {
                                         </TableCell>
                                         {/* <TableCell>The API I am using does not have any property that refers to status</TableCell> */}
                                         <TableCell>
-                                            <Button variant="contained" onClick={() => { window.location.href = '/employee/' + row.id }}>
-                                                <EditIcon />Edit
+                                            <Button variant="outlined" onClick={() => { window.location.href = '/employee/' + row.id }}>
+                                                <EditIcon fontSize='small' className='mr-2' />Edit
                                             </Button>
                                         </TableCell>
                                     </TableRow>
