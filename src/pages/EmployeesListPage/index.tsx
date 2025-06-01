@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import { useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from 'app/appStore';
-import { fetchEmployeesThunk, setEmailFilter, setFirstNameFilter, setlastNameFilter, setLimit, setPage } from '../../features/employees/employeesSlice';
+import { fetchEmployeesThunk, setFilter, setLimit, setPage, type EmployeesFilterMeta } from '../../features/employees/employeesSlice';
 import { useAppDispatch } from '../../app/appHooks';
 import { stringAvatar } from '../../app/appUtils';
 import './style.module.scss'
@@ -46,7 +46,7 @@ function EmployeeListPage() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {employeesState.filteredData.map((row) => (
+                            {employeesState.filteredEmployees.map((row) => (
                                 <TableRow key={row.id}>
                                     <TableCell>{row.id}</TableCell>
                                     <TableCell>
@@ -97,9 +97,9 @@ function EmployeeListFilters() {
 
     return (
         <div className='d-flex align-items-center mb-5'>
-            <SearchInput value={firstName} inputId='firstNameInput' label="First Name" onSearchInputCallback={(value) => dispatch(setFirstNameFilter(value))} />
-            <SearchInput value={lastName} inputId='lastNameInput' label="Last Name" onSearchInputCallback={(value) => dispatch(setlastNameFilter(value))} />
-            <SearchInput value={email} inputId='emailInput' label="Email" onSearchInputCallback={(value) => dispatch(setEmailFilter(value))} />
+            <SearchInput value={firstName} inputId='firstNameInput' label="First Name" onSearchInputCallback={(value) => dispatch(setFilter({ key: "firstName", value: value } as EmployeesFilterMeta))} />
+            <SearchInput value={lastName} inputId='lastNameInput' label="Last Name" onSearchInputCallback={(value) => dispatch(setFilter({ key: "lastName", value: value } as EmployeesFilterMeta))} />
+            <SearchInput value={email} inputId='emailInput' label="Email" onSearchInputCallback={(value) => dispatch(setFilter({ key: "email", value: value } as EmployeesFilterMeta))} />
         </div>
     )
 }

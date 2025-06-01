@@ -16,7 +16,7 @@ export interface EmployeesFilterData {
 // Private interface for the state of employees. No need to be exported.
 interface EmployeesState {
     allData: Employee[];
-    filteredData: Employee[];
+    filteredEmployees: Employee[];
     total: number; // Total number of employees (not filtered)
     loading: boolean;
     filterData: EmployeesFilterData;
@@ -25,7 +25,7 @@ interface EmployeesState {
 // This is the initial state of the employees slice.
 const initialState: EmployeesState = {
     allData: [],
-    filteredData: [],
+    filteredEmployees: [],
     total: 0,
     loading: false,
     filterData: {
@@ -49,51 +49,80 @@ const employeesSlice = createSlice({
     initialState: initialState,
     reducers: {
         //#region Filters
-        setFirstNameFilter(state, action: PayloadAction<string>) {
-            const filterValue = action.payload;
-            const updatedFilters = state.filterData.filters || [];
-            if (filterValue) {
-                updatedFilters.push({ key: 'firstName', value: filterValue });
-            }
-            state.filterData.filters = updatedFilters;
-            state.filterData.page = 1; // Reset to first page when department filter changes
+        // setFirstNameFilter(state, action: PayloadAction<string>) {
+        //     const filterValue = action.payload;
+        //     const updatedFilters = state.filterData.filters || [];
+        //     if (filterValue) {
+        //         if (updatedFilters.some(filter => filter.key === 'firstName')) {
+        //             updatedFilters.find(filter => filter.key === 'firstName')!.value = filterValue;
+        //         }
+        //         else {
+        //             updatedFilters.push({ key: 'firstName', value: filterValue });
+        //         }
+        //     }
+        //     state.filterData.filters = updatedFilters;
+        //     state.filterData.page = 1; // Reset to first page when department filter changes
 
-            employeesSlice.caseReducers.filterEmployees(state);
-        },
-        setlastNameFilter(state, action: PayloadAction<string>) {
-            const filterValue = action.payload;
-            const updatedFilters = state.filterData.filters || [];
-            if (filterValue) {
-                updatedFilters.push({ key: 'lastName', value: filterValue });
-            }
-            state.filterData.filters = updatedFilters;
-            state.filterData.page = 1; // Reset to first page when department filter changes
+        //     employeesSlice.caseReducers.filterEmployees(state);
+        // },
+        // setlastNameFilter(state, action: PayloadAction<string>) {
+        //     const filterValue = action.payload;
+        //     const updatedFilters = state.filterData.filters || [];
+        //     if (filterValue) {
+        //         updatedFilters.push({ key: 'lastName', value: filterValue });
+        //     }
+        //     state.filterData.filters = updatedFilters;
+        //     state.filterData.page = 1; // Reset to first page when department filter changes
 
-            employeesSlice.caseReducers.filterEmployees(state);
-        },
-        setDepartmentFilter(state, action: PayloadAction<string>) {
-            const filterValue = action.payload;
-            const updatedFilters = state.filterData.filters || [];
-            if (filterValue) {
-                updatedFilters.push({ key: 'company.department', value: filterValue });
-            }
-            state.filterData.filters = updatedFilters;
-            state.filterData.page = 1; // Reset to first page when department filter changes
+        //     employeesSlice.caseReducers.filterEmployees(state);
+        // },
+        // setDepartmentFilter(state, action: PayloadAction<string>) {
+        //     const filterValue = action.payload;
+        //     const updatedFilters = state.filterData.filters || [];
+        //     if (filterValue) {
+        //         updatedFilters.push({ key: 'company.department', value: filterValue });
+        //     }
+        //     state.filterData.filters = updatedFilters;
+        //     state.filterData.page = 1; // Reset to first page when department filter changes
 
-            employeesSlice.caseReducers.filterEmployees(state);
-        },
-        setEmailFilter(state, action: PayloadAction<string>) {
-            const filterValue = action.payload;
+        //     employeesSlice.caseReducers.filterEmployees(state);
+        // },
+        // setEmailFilter(state, action: PayloadAction<string>) {
+        //     const filterValue = action.payload;
+        //     const updatedFilters = state.filterData.filters || [];
+        //     if (filterValue) {
+        //         updatedFilters.push({ key: 'email', value: filterValue });
+        //     }
+        //     state.filterData.filters = updatedFilters;
+        //     state.filterData.page = 1; // Reset to first page when email filter changes
+
+        //     employeesSlice.caseReducers.filterEmployees(state);
+        // },
+        setFilter(state, action: PayloadAction<EmployeesFilterMeta>,) {
+            const newFilter = action.payload;
             const updatedFilters = state.filterData.filters || [];
-            if (filterValue) {
-                updatedFilters.push({ key: 'email', value: filterValue });
+            console.log('Setting filter:', newFilter.value);
+            if (newFilter) {
+                if (newFilter.value && newFilter.value.trim() !== '') { // filter value is not empty, then add or update the filter
+                    if (updatedFilters.some(f => f.key === newFilter.key)) {
+                        updatedFilters.find(f => f.key === newFilter.key)!.value = newFilter.value;
+                    }
+                    else {
+                        updatedFilters.push({ key: newFilter.key, value: newFilter.value });
+                    }
+                }
+                else { // filter value is empty, then remove the filter
+                    const index = updatedFilters.findIndex(f => f.key === newFilter.key);
+                    if (index !== -1) {
+                        updatedFilters.splice(index, 1);
+                    }
+                }
             }
             state.filterData.filters = updatedFilters;
             state.filterData.page = 1; // Reset to first page when email filter changes
 
             employeesSlice.caseReducers.filterEmployees(state);
         },
-        // TODO: add any other type of filters if needed
         //#endregion Filters
         setPage(state, action: PayloadAction<number>) {
             state.filterData.page = action.payload;
@@ -108,13 +137,13 @@ const employeesSlice = createSlice({
             const filters = state.filterData.filters || [];
             const page = state.filterData.page || 1;
             const limit = state.filterData.limit || 10;
-            let filteredData = [] as Employee[];
+            let filteredEmployees = [] as Employee[];
             // Filter the allData based on the filters
             if (filters.length === 0) { // If no filters are applied, return all data
-                filteredData = state.allData.slice();
+                filteredEmployees = state.allData.slice();
             }
             else {
-                filteredData = state.allData.filter((employee) => {
+                filteredEmployees = state.allData.filter((employee) => {
                     return filters.every((filter) => {
                         switch (filter.key) {
                             case 'firstName':
@@ -133,8 +162,10 @@ const employeesSlice = createSlice({
             }
 
             // Set the filtered data and total count
-            state.filteredData = filteredData.slice((page - 1) * limit, page * limit);
-            state.total = filteredData.length;
+            state.filteredEmployees = filteredEmployees.slice((page - 1) * limit, page * limit);
+            state.total = filteredEmployees.length;
+
+            console.log('Filtered Data:', JSON.stringify(state.filterData));
         }
     },
     extraReducers: (builder) => {
@@ -158,7 +189,7 @@ const employeesSlice = createSlice({
 
 
 // Export the actions to be used in components
-export const { setFirstNameFilter, setlastNameFilter, setDepartmentFilter, setEmailFilter, setPage, setLimit } = employeesSlice.actions;
+export const { setFilter, setPage, setLimit } = employeesSlice.actions;
 
 // Export the reducer to be used in the store
 export default employeesSlice.reducer;
