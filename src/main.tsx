@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { ThemeProvider } from '@mui/material'
 import App from './App.tsx'
 import { appStore } from './app/appStore.ts' // Import your Redux store
-import { appMuiTheme } from './app/muiConfig.ts'
+import { appMuiTheme } from './app/appMuiConfig.ts'
 import './index.scss'
 
 createRoot(document.getElementById('root')!).render(

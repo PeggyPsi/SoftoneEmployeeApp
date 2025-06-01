@@ -49,6 +49,15 @@ const employeesSlice = createSlice({
             state.fetchParams.filters = updatedFilters;
             state.fetchParams.page = 1; // Reset to first page when department filter changes
         },
+        setEmailFilter(state, action: PayloadAction<string>) {
+            const emailFilter = action.payload;
+            const updatedFilters = state.fetchParams.filters || [];
+            if (emailFilter) {
+                updatedFilters.push({ key: 'email', value: emailFilter });
+            }
+            state.fetchParams.filters = updatedFilters;
+            state.fetchParams.page = 1; // Reset to first page when email filter changes
+        },
         // TODO: add any other type of filters if needed
         setPage(state, action: PayloadAction<number>) {
             state.fetchParams.page = action.payload;
