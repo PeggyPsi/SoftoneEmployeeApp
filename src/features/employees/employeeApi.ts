@@ -14,7 +14,7 @@ export interface EmployeesFilter {
 }
 
 export interface EmployeesFetchParams {
-    queryStr?: string;
+    //queryStr?: string;
     filters?: EmployeesFilter[];
     page: number; //
     limit: number;
@@ -28,7 +28,14 @@ export interface EmployeesFetchParams {
 export async function fetchEmployees(params: EmployeesFetchParams): Promise<EmployeeResponse> {
     const urlSearchParams = buildUrlSearchParams(params);
     const queryString = urlSearchParams?.toString();
-    const url = `${baseApiUrl}/users?${queryString}`;
+
+    let url = `${baseApiUrl}/users`;
+    if (params.filters && params.filters.length > 0) {
+        url += '/filter';
+    }
+    url += `?${queryString}`;
+
+    console.log('Fetching employees from URL:', url);
 
     return fetch(url)
         // When got a response call a `json` method on it
@@ -40,10 +47,6 @@ export async function fetchEmployees(params: EmployeesFetchParams): Promise<Empl
 function buildUrlSearchParams(params: EmployeesFetchParams): URLSearchParams {
     // Create a URLSearchParams object to build the query string
     const urlSearchParams = new URLSearchParams();
-
-    if (params.queryStr) {
-        urlSearchParams.set('q', params.queryStr);
-    }
 
     if (params.filters && params.filters.length > 0) {
         params.filters.forEach((filter) => {

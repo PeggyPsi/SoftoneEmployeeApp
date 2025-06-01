@@ -3,10 +3,11 @@ import { useEffect } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import { useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from 'app/appStore';
-import { fetchEmployeesThunk, setLimit, setPage } from '../../features/employees/employeesSlice';
+import { fetchEmployeesThunk, setEmailFilter, setFirstNameFilter, setlastNameFilter, setLimit, setPage } from '../../features/employees/employeesSlice';
 import { useAppDispatch } from '../../app/appHooks';
 import { stringAvatar } from '../../app/appUtils';
 import './style.module.scss'
+import SearchInput from '../../components/shared/SearchInput';
 
 function EmployeeListPage() {
     const employeesState = useSelector((state: RootState) => state.employees);
@@ -20,64 +21,87 @@ function EmployeeListPage() {
 
     if (employeesState.loading) {
         return (
-            <Backdrop sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })} open={true}>
-                <CircularProgress color="inherit" />
-            </Backdrop>
+            <>
+                <Backdrop sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })} open={true}>
+                    <CircularProgress color="inherit" />
+                </Backdrop>
+                <EmployeeListFilters />
+            </>
+        );
+    }
+    else {
+        return (
+            <>
+                <EmployeeListFilters />
+                <TableContainer component={Paper}>
+                    <Table stickyHeader aria-label="sticky table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>ID</TableCell>
+                                <TableCell>Full Name</TableCell>
+                                <TableCell>Department</TableCell>
+                                <TableCell>Email</TableCell>
+                                {/* <TableCell>Status</TableCell> */}
+                                <TableCell></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {employeesState.data.map((row) => (
+                                <TableRow key={row.id}>
+                                    <TableCell>{row.id}</TableCell>
+                                    <TableCell>
+                                        <div className='d-flex align-items-center'>
+                                            {row.image ? <Avatar alt={`${row.firstName} ${row.lastName}`} src={row.image} /> : <Avatar {...stringAvatar(`${row.firstName} ${row.lastName}`)} />}
+                                            <span className='ml-2'>{row.firstName} {row.lastName}</span>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>{row.company?.department}</TableCell>
+                                    <TableCell>
+                                        <a href={'mailto:' + row.email} target='_blank'>{row.email}</a>
+                                    </TableCell>
+                                    {/* <TableCell>The API I am using does not have any property that refers to status</TableCell> */}
+                                    <TableCell>
+                                        <Button variant="contained" onClick={() => { window.location.href = '/employee/' + row.id }}>
+                                            <EditIcon />Edit
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        component="div"
+                        count={employeesState.total ?? 0}
+                        rowsPerPage={employeesState.fetchParams.limit}
+                        page={employeesState.fetchParams.page - 1} // MUI TablePagination uses 0-based index
+                        onPageChange={(event, newPage) => dispatch(setPage(newPage + 1))} // MUI TablePagination uses 0-based index so when page changes we need to dispatch newPage + 1
+                        onRowsPerPageChange={(event) => dispatch(setLimit(Number(event.target.value)))}
+                    />
+                </TableContainer >
+            </>
         );
     }
 
-    return (
-        <>
-            <TableContainer component={Paper}>
-                <Table stickyHeader aria-label="sticky table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>ID</TableCell>
-                            <TableCell>Full Name</TableCell>
-                            <TableCell>Department</TableCell>
-                            <TableCell>Email</TableCell>
-                            {/* <TableCell>Status</TableCell> */}
-                            <TableCell></TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {employeesState.data.map((row) => (
-                            <TableRow key={row.id}>
-                                <TableCell>{row.id}</TableCell>
-                                <TableCell>
-                                    <div className='d-flex align-items-center'>
-                                        {row.image ? <Avatar alt={`${row.firstName} ${row.lastName}`} src={row.image} /> : <Avatar {...stringAvatar(`${row.firstName} ${row.lastName}`)} />}
-                                        <span className='ml-2'>{row.firstName} {row.lastName}</span>
-                                    </div>
-                                </TableCell>
-                                <TableCell>{row.company?.department}</TableCell>
-                                <TableCell>
-                                    <a href={'mailto:' + row.email} target='_blank'>{row.email}</a>
-                                </TableCell>
-                                {/* <TableCell>The API I am using does not have any property that refers to status</TableCell> */}
-                                <TableCell>
-                                    <Button variant="contained" onClick={() => { window.location.href = '/employee/' + row.id }}>
-                                        <EditIcon />Edit
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={employeesState.total ?? 0}
-                    rowsPerPage={employeesState.fetchParams.limit}
-                    page={employeesState.fetchParams.page - 1} // MUI TablePagination uses 0-based index
-                    onPageChange={(event, newPage) => dispatch(setPage(newPage + 1))} // MUI TablePagination uses 0-based index so when page changes we need to dispatch newPage + 1
-                    onRowsPerPageChange={(event) => dispatch(setLimit(Number(event.target.value)))}
-                />
-            </TableContainer >
-        </>
-    );
-
     //#endregion Render
+}
+
+function EmployeeListFilters() {
+    const employeesState = useSelector((state: RootState) => state.employees);
+    const dispatch: AppDispatch = useAppDispatch();
+
+    //const queryStr = employeesState.fetchParams.queryStr ?? '';
+    const firstName = employeesState.fetchParams.filters?.find(filter => filter.key === 'firstName')?.value ?? '';
+    const lastName = employeesState.fetchParams.filters?.find(filter => filter.key === 'lastName')?.value ?? '';
+    const email = employeesState.fetchParams.filters?.find(filter => filter.key === 'email')?.value ?? '';
+
+    return (
+        <div className='d-flex align-items-center mb-5'>
+            <SearchInput value={firstName} inputId='firstNameInput' label="First Name" onSearchInputCallback={(value) => dispatch(setFirstNameFilter(value))} />
+            <SearchInput value={lastName} inputId='lastNameInput' label="Last Name" onSearchInputCallback={(value) => dispatch(setlastNameFilter(value))} />
+            <SearchInput value={email} inputId='emailInput' label="Email" onSearchInputCallback={(value) => dispatch(setEmailFilter(value))} />
+        </div>
+    )
 }
 
 export default EmployeeListPage;

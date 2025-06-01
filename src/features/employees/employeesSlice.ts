@@ -36,29 +36,45 @@ const employeesSlice = createSlice({
     name: "employees",
     initialState: initialState,
     reducers: {
-        setSearch(state, action: PayloadAction<string>) {
-            state.fetchParams.queryStr = action.payload;
-            state.fetchParams.page = 1; // Reset to first page when search changes
+        //#region Filters
+        setFirstNameFilter(state, action: PayloadAction<string>) {
+            const filterValue = action.payload;
+            const updatedFilters = state.fetchParams.filters || [];
+            if (filterValue) {
+                updatedFilters.push({ key: 'firstName', value: filterValue });
+            }
+            state.fetchParams.filters = updatedFilters;
+            state.fetchParams.page = 1; // Reset to first page when department filter changes
+        },
+        setlastNameFilter(state, action: PayloadAction<string>) {
+            const filterValue = action.payload;
+            const updatedFilters = state.fetchParams.filters || [];
+            if (filterValue) {
+                updatedFilters.push({ key: 'lastName', value: filterValue });
+            }
+            state.fetchParams.filters = updatedFilters;
+            state.fetchParams.page = 1; // Reset to first page when department filter changes
         },
         setDepartmentFilter(state, action: PayloadAction<string>) {
-            const departmentFilter = action.payload;
+            const filterValue = action.payload;
             const updatedFilters = state.fetchParams.filters || [];
-            if (departmentFilter) {
-                updatedFilters.push({ key: 'company.department', value: departmentFilter });
+            if (filterValue) {
+                updatedFilters.push({ key: 'company.department', value: filterValue });
             }
             state.fetchParams.filters = updatedFilters;
             state.fetchParams.page = 1; // Reset to first page when department filter changes
         },
         setEmailFilter(state, action: PayloadAction<string>) {
-            const emailFilter = action.payload;
+            const filterValue = action.payload;
             const updatedFilters = state.fetchParams.filters || [];
-            if (emailFilter) {
-                updatedFilters.push({ key: 'email', value: emailFilter });
+            if (filterValue) {
+                updatedFilters.push({ key: 'email', value: filterValue });
             }
             state.fetchParams.filters = updatedFilters;
             state.fetchParams.page = 1; // Reset to first page when email filter changes
         },
         // TODO: add any other type of filters if needed
+        //#endregion Filters
         setPage(state, action: PayloadAction<number>) {
             state.fetchParams.page = action.payload;
         },
@@ -84,8 +100,10 @@ const employeesSlice = createSlice({
     },
 });
 
+
+
 // Export the actions to be used in components
-export const { setSearch, setDepartmentFilter, setPage, setLimit } = employeesSlice.actions;
+export const { setFirstNameFilter, setlastNameFilter, setDepartmentFilter, setEmailFilter, setPage, setLimit } = employeesSlice.actions;
 
 // Export the reducer to be used in the store
 export default employeesSlice.reducer;
