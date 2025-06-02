@@ -1,4 +1,4 @@
-# Employee App - ENTERSOFT / SOFTONE
+# 🧑‍💻🏢 Employee App - ENTERSOFT / SOFTONE
 
 ## About the App
 This application is used for listing employees fetched by a dummy API. The app also provides a detail page for each employee. 
@@ -14,8 +14,8 @@ Before you begin, ensure you have the following installed:
 Clone the repository and install dependencies.
 
 ```bash
-git clone https://github.com/your-username/your-project.git
-cd your-project
+git clone https://github.com/PeggyPsi/SoftoneEmployeeApp.git
+cd SoftoneEmployeeApp
 npm install
 ```
 
