@@ -29,12 +29,22 @@ npm run dev
 
 The application url to use is **http://localhost:3000/**
 
+## Frameworks / Tools / Packages used
+
+- [React 19](https://react.dev/blog/2024/12/05/react-19)
+- [Vite v5](https://vite.dev/config/)
+- [Typescript](https://www.typescriptlang.org/)
+- [React Router v7](https://reactrouter.com/home)
+- [Redux Toolkit v2.8.2](https://redux-toolkit.js.org/usage/usage-guide)
+- [Material UI v7](https://mui.com/material-ui/react-table/)
+- [SCSS](https://sass-lang.com/) for styling and layout
+
 ## Features
 
 The application provides the following features:
 
 ### List of employees 
-The employees data is fetched by a dummy API speciifically 'https://dummyjson.com/users'. Data is rendered using Material UI Table related components.
+The employees data is fetched by a dummy API speciifically 'https://dummyjson.com/users'. Data is rendered using [Material UI Table](https://mui.com/material-ui/react-table/) related components.
 
 The user can filter the data based on various filters like firstName, lastName, email, department etc. Filtering is implemented on client-side due to the fact that the API does not provide an ideal endpoint for combining filters, substring matching etc. The user is also able to clear all selected filters at any point. 
 
