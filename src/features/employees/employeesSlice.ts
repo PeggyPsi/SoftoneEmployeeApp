@@ -71,8 +71,15 @@ const employeesSlice = createSlice({
             }
             state.filterData.filters = updatedFilters;
             state.filterData.page = 1; // Reset to first page when email filter changes
-            setToLocalStorage('employeesFilters', updatedFilters); // Save filters to local storage
             employeesSlice.caseReducers.filterEmployees(state);
+            setToLocalStorage('employeesFilters', updatedFilters); // Save filters to local storage
+        },
+        clearFilters(state) {
+            const updatedFilters = [] as EmployeesFilterMeta[];
+            state.filterData.filters = updatedFilters;
+            state.filterData.page = 1; // Reset to first page when email filter changes
+            employeesSlice.caseReducers.filterEmployees(state);
+            setToLocalStorage('employeesFilters', updatedFilters); // Save filters to local storage
         },
         setPage(state, action: PayloadAction<number>) {
             state.filterData.page = action.payload;
@@ -114,8 +121,6 @@ const employeesSlice = createSlice({
             // Set the filtered data and total count
             state.filteredEmployees = filteredEmployees.slice((page - 1) * limit, page * limit);
             state.total = filteredEmployees.length;
-
-            console.log('Filtered Data:', JSON.stringify(state.filterData));
         }
     },
     extraReducers: (builder) => {
@@ -137,7 +142,7 @@ const employeesSlice = createSlice({
 });
 
 // Export the actions to be used in components
-export const { setFilter, setPage, setLimit } = employeesSlice.actions;
+export const { setFilter, clearFilters, setPage, setLimit } = employeesSlice.actions;
 
 // Export the reducer to be used in the store
 export default employeesSlice.reducer;

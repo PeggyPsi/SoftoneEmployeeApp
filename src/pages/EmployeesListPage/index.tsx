@@ -3,13 +3,14 @@ import { useEffect } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import { useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from 'app/appStore';
-import { fetchEmployeesThunk, setFilter, setLimit, setPage, type EmployeesFilterMeta } from '../../features/employees/employeesSlice';
+import { clearFilters, fetchEmployeesThunk, setFilter, setLimit, setPage, type EmployeesFilterMeta } from '../../features/employees/employeesSlice';
 import { useAppDispatch } from '../../app/appHooks';
 import { getDistinctValuesFromArray, stringAvatar } from '../../utils/appUtils';
 import './style.module.scss'
 import SearchInput from '../../components/shared/SearchInput';
 import { convertArrayOfStringsToArrayOfDropdownListItems } from '../../components/shared/DropdownList/utils';
 import DropdownList from '../../components/shared/DropdownList';
+import CloseIcon from '@mui/icons-material/Close';
 
 function EmployeeListPage() {
     const employeesState = useSelector((state: RootState) => state.employees);
@@ -108,13 +109,16 @@ function EmployeeListFilters() {
 
     return (
         <div className='card mb-3'>
-            <div className="card-container d-flex align-items-center gap-3">
+            <div className="card-container d-flex gap-3 align-items-end">
                 <SearchInput value={firstName} inputId='firstNameInput' label="First Name" onSearchInputCallback={(value) => dispatch(setFilter({ key: "firstName", value: value } as EmployeesFilterMeta))} />
                 <SearchInput value={lastName} inputId='lastNameInput' label="Last Name" onSearchInputCallback={(value) => dispatch(setFilter({ key: "lastName", value: value } as EmployeesFilterMeta))} />
                 <SearchInput value={email} inputId='emailInput' label="Email" onSearchInputCallback={(value) => dispatch(setFilter({ key: "email", value: value } as EmployeesFilterMeta))} />
                 <DropdownList value={department} inputId='departmentInput' label='Department'
                     items={departmentsDropdownListItems}
                     onDropdownListItemSelectedCallback={(value) => dispatch(setFilter({ key: "company.department", value: value } as EmployeesFilterMeta))} />
+                <Button variant="outlined" onClick={() => dispatch(clearFilters())}>
+                    <CloseIcon fontSize="small" className='mr-2' /> Clear Filters
+                </Button>
             </div>
         </div>
     )

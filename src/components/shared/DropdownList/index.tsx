@@ -21,10 +21,11 @@ function DropdownList({ label, inputId, value, items, clearable = true, onDropdo
             <label htmlFor={inputId} className="mb-2">{label}</label>
             <select name={inputId}
                 id={inputId}
+                value={value}
                 onChange={(event) => onDropdownListItemSelectedCallback(event.target.value)}>
-                {clearable && <option value="" selected={value === ''}>Select an option</option>}
+                {clearable && <option value="">Select an option</option>}
                 {items.map((item) => (
-                    <option key={item.value} value={item.value} selected={item.value === value}>
+                    <option key={item.value} value={item.value}>
                         {item.description}
                     </option>
                 ))}

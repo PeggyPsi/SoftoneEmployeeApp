@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './style.module.scss'
 
 type SearchInputProps = {
@@ -10,6 +10,12 @@ type SearchInputProps = {
 
 function SearchInput({ label, inputId, value, onSearchInputCallback }: SearchInputProps) {
     const [searchValue, setSearchValue] = useState(value);
+
+    useEffect(() => {
+        // We keep the search value in sync with the value provided in props
+        // This is useful when the parent component updates the value
+        setSearchValue(value);
+    }, [value]);
 
     return (
         <div className="search-input-container">
