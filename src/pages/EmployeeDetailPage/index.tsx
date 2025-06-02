@@ -27,7 +27,20 @@ function EmployeeDetailPage() {
             </div>
             <div className="card">
                 <h1 className='mb-3 mt-0'>{employee?.firstName} {employee?.lastName}</h1>
-                TODO
+                <h2>{employee?.company?.title} | {employee?.company?.department}</h2>
+                <hr />
+                <div className="card-body d-flex align-items-start">
+                    <img src={employee?.image} alt={`${employee?.firstName} ${employee?.lastName}`} />
+                    <div>
+                        <p><strong>Email:</strong> {employee?.email}</p>
+                        <p><strong>Phone:</strong> {employee?.phone}</p>
+                        <p><strong>Address:</strong> {employee?.address?.address}</p>
+                        <p><strong>City:</strong> {employee?.address?.city}</p>
+                        <p><strong>State:</strong> {employee?.address?.state}</p>
+                        <p><strong>Country:</strong> {employee?.address?.country}</p>
+                        <p><strong>Zip Code:</strong> {employee?.address?.postalCode}</p>
+                    </div>
+                </div>
             </div>
         </>
     );
