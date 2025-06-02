@@ -11,6 +11,7 @@ import SearchInput from '../../components/shared/SearchInput';
 import { convertArrayOfStringsToArrayOfDropdownListItems } from '../../components/shared/DropdownList/utils';
 import DropdownList from '../../components/shared/DropdownList';
 import CloseIcon from '@mui/icons-material/Close';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 function EmployeeListPage() {
     const employeesState = useSelector((state: RootState) => state.employees);
@@ -22,13 +23,22 @@ function EmployeeListPage() {
 
     //#region Render
 
+    const headerContainer = (
+        <div className="d-flex align-items-center justify-content-between">
+            <h1 className='mb-3 mt-0'>Employees List</h1>
+            <Button variant="outlined" onClick={() => { window.location.href = '/' }}>
+                <ArrowBackIosNewIcon fontSize="small" className='mr-2' /> Back to Home Page
+            </Button>
+        </div>
+    );
+
     if (employeesState.loading) {
         return (
             <>
                 <Backdrop sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })} open={true}>
                     <CircularProgress color="inherit" />
                 </Backdrop>
-                <h1 className='mb-3 mt-0'>Employees List</h1>
+                {headerContainer}
                 <EmployeeListFilters />
             </>
         );
@@ -36,7 +46,7 @@ function EmployeeListPage() {
     else {
         return (
             <>
-                <h1 className='mb-3 mt-0'>Employees List</h1>
+                {headerContainer}
                 <EmployeeListFilters />
                 <div className='card'>
                     <TableContainer component={Paper} >

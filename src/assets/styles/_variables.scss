@@ -5,6 +5,7 @@ $dangerColor: #DB5A42;
 $successColor: #4CB963;
 $mainBackground: var(--main-background); // used basically for the whole base layout
 $secondaryBackground: var(--secondary-background); // used for the secondary layout, like the sidebar, cards etc 
+$borderColor: var(--border-color);
 
 $boxShadow: var(--box-shadow, none);
 
@@ -23,13 +24,15 @@ $spacers: (
     :root {
         --main-background: #030712; // used basically for the whole base layout
         --secondary-background: #10141e; // used for the secondary layout, like the sidebar, cards etc
+        --border-color: transparent;
     }
 }
 
 @media (prefers-color-scheme: light) {
     :root {
-        --main-background: $white; // used basically for the whole base layout
-        --secondary-background: $white; // used for the secondary layout, like the sidebar, cards etc
+        --main-background: #F9F9F9; // used basically for the whole base layout
+        --secondary-background: #F9F9F9; // used for the secondary layout, like the sidebar, cards etc
         --box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        --border-color: #f2f2f2;
     }
 }
