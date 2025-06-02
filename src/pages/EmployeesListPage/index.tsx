@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from 'app/appStore';
 import { fetchEmployeesThunk, setFilter, setLimit, setPage, type EmployeesFilterMeta } from '../../features/employees/employeesSlice';
 import { useAppDispatch } from '../../app/appHooks';
-import { getDistinctValuesFromArray, stringAvatar } from '../../app/appUtils';
+import { getDistinctValuesFromArray, stringAvatar } from '../../utils/appUtils';
 import './style.module.scss'
 import SearchInput from '../../components/shared/SearchInput';
 import { convertArrayOfStringsToArrayOfDropdownListItems } from '../../components/shared/DropdownList/utils';
@@ -17,7 +17,7 @@ function EmployeeListPage() {
 
     useEffect(() => {
         dispatch(fetchEmployeesThunk());
-    }, [dispatch]); // useEffect depends on the fetchParams
+    }, [dispatch]);
 
     //#region Render
 

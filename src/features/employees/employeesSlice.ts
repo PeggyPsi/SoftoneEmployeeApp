@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Employee, EmployeeResponse } from "models/Employee";
 import { fetchAllEmployees } from "./employeeApi";
+import { getFromLocalStorage, setToLocalStorage } from "../../utils/localStorageUtils";
 
 export interface EmployeesFilterMeta {
     key: string;
@@ -23,13 +24,14 @@ interface EmployeesState {
 }
 
 // This is the initial state of the employees slice.
+const employeesFiltersInitialState = getFromLocalStorage<EmployeesFilterMeta[]>('employeesFilters') || []
 const initialState: EmployeesState = {
     allData: [],
     filteredEmployees: [],
     total: 0,
     loading: false,
     filterData: {
-        filters: [],
+        filters: employeesFiltersInitialState,
         page: 1, // Start from the first page
         limit: 10, // Default limit for pagination
     } as EmployeesFilterData,
@@ -51,7 +53,6 @@ const employeesSlice = createSlice({
         setFilter(state, action: PayloadAction<EmployeesFilterMeta>,) {
             const newFilter = action.payload;
             const updatedFilters = state.filterData.filters || [];
-            console.log('Setting filter:', newFilter.value);
             if (newFilter) {
                 if (newFilter.value && newFilter.value.trim() !== '') { // filter value is not empty, then add or update the filter
                     if (updatedFilters.some(f => f.key === newFilter.key)) {
@@ -70,7 +71,7 @@ const employeesSlice = createSlice({
             }
             state.filterData.filters = updatedFilters;
             state.filterData.page = 1; // Reset to first page when email filter changes
-
+            setToLocalStorage('employeesFilters', updatedFilters); // Save filters to local storage
             employeesSlice.caseReducers.filterEmployees(state);
         },
         setPage(state, action: PayloadAction<number>) {
