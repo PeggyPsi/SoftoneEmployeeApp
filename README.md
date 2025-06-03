@@ -6,7 +6,7 @@ This application is used for listing employees fetched by a dummy API. The app a
 ## Prerequisites
 Before you begin, ensure you have the following installed:
 
-- **Node.js** (>= 23) – [Download Node.js](https://nodejs.org/)
+- **Node.js**
 - **npm**
 
 ## Installation
